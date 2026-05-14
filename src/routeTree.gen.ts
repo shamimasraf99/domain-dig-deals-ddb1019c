@@ -9,10 +9,16 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as VpsRouteImport } from './routes/vps'
 import { Route as HostingRouteImport } from './routes/hosting'
 import { Route as DomainsRouteImport } from './routes/domains'
 import { Route as IndexRouteImport } from './routes/index'
 
+const VpsRoute = VpsRouteImport.update({
+  id: '/vps',
+  path: '/vps',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const HostingRoute = HostingRouteImport.update({
   id: '/hosting',
   path: '/hosting',
@@ -33,34 +39,45 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/domains': typeof DomainsRoute
   '/hosting': typeof HostingRoute
+  '/vps': typeof VpsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/domains': typeof DomainsRoute
   '/hosting': typeof HostingRoute
+  '/vps': typeof VpsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/domains': typeof DomainsRoute
   '/hosting': typeof HostingRoute
+  '/vps': typeof VpsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/domains' | '/hosting'
+  fullPaths: '/' | '/domains' | '/hosting' | '/vps'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/domains' | '/hosting'
-  id: '__root__' | '/' | '/domains' | '/hosting'
+  to: '/' | '/domains' | '/hosting' | '/vps'
+  id: '__root__' | '/' | '/domains' | '/hosting' | '/vps'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   DomainsRoute: typeof DomainsRoute
   HostingRoute: typeof HostingRoute
+  VpsRoute: typeof VpsRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/vps': {
+      id: '/vps'
+      path: '/vps'
+      fullPath: '/vps'
+      preLoaderRoute: typeof VpsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/hosting': {
       id: '/hosting'
       path: '/hosting'
@@ -89,6 +106,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   DomainsRoute: DomainsRoute,
   HostingRoute: HostingRoute,
+  VpsRoute: VpsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
