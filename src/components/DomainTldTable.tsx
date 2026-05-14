@@ -32,13 +32,13 @@ export function DomainTldTable({ offers, loading }: Props) {
   return (
     <div className="glass rounded-2xl overflow-hidden shadow-soft">
       <div className="overflow-x-auto">
-        <table className="w-full text-sm">
-          <thead className="bg-muted/40 text-xs uppercase tracking-wider text-muted-foreground">
+        <table className="w-full text-base">
+          <thead className="bg-muted/40 text-sm tracking-wide text-muted-foreground">
             <tr>
-              <th className="px-6 py-4 text-left font-semibold">Domain</th>
-              <th className="px-6 py-4 text-left font-semibold">Price</th>
-              <th className="px-6 py-4 text-left font-semibold">Registrar</th>
-              <th className="px-6 py-4 text-right font-semibold">Compare</th>
+              <th className="px-6 py-5 text-left font-semibold">Domain</th>
+              <th className="px-6 py-5 text-left font-semibold">Price</th>
+              <th className="px-6 py-5 text-left font-semibold">Registrar</th>
+              <th className="px-6 py-5 text-right font-semibold">Compare</th>
             </tr>
           </thead>
           <tbody>
@@ -46,8 +46,8 @@ export function DomainTldTable({ offers, loading }: Props) {
               Array.from({ length: 5 }).map((_, i) => (
                 <tr key={i} className="border-t border-border">
                   {Array.from({ length: 4 }).map((_, j) => (
-                    <td key={j} className="px-6 py-5">
-                      <div className="h-4 bg-muted/60 rounded animate-pulse" />
+                    <td key={j} className="px-6 py-6">
+                      <div className="h-5 bg-muted/60 rounded animate-pulse" />
                     </td>
                   ))}
                 </tr>
@@ -60,26 +60,26 @@ export function DomainTldTable({ offers, loading }: Props) {
                     i % 2 === 1 ? "bg-muted/20" : ""
                   }`}
                 >
-                  <td className="px-6 py-5">
+                  <td className="px-6 py-6">
                     <Link
                       to="/domains"
                       search={{ tld: r.tld }}
-                      className="font-display text-lg font-bold text-gradient hover:opacity-80"
+                      className="font-display text-xl md:text-2xl font-bold text-gradient hover:opacity-80"
                     >
                       {r.tld}
                     </Link>
                   </td>
-                  <td className="px-6 py-5 font-semibold">
+                  <td className="px-6 py-6 font-display text-lg md:text-xl font-semibold">
                     {format(r.cheapest.registration_price)}
                   </td>
-                  <td className="px-6 py-5 text-foreground/90">
+                  <td className="px-6 py-6 text-base md:text-lg text-foreground/90">
                     {r.cheapest.registrar}
                   </td>
-                  <td className="px-6 py-5 text-right">
+                  <td className="px-6 py-6 text-right">
                     <Link
                       to="/domains"
                       search={{ tld: r.tld }}
-                      className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full gradient-primary text-primary-foreground text-xs font-semibold shadow-soft hover:shadow-glow transition-base"
+                      className="inline-flex items-center gap-1 px-4 py-2 rounded-full gradient-primary text-primary-foreground text-sm font-semibold shadow-soft hover:shadow-glow transition-base"
                     >
                       + {r.more} more
                     </Link>
@@ -91,10 +91,10 @@ export function DomainTldTable({ offers, loading }: Props) {
         </table>
       </div>
 
-      <div className="flex justify-center py-5 border-t border-border bg-muted/20">
+      <div className="flex justify-center py-6 border-t border-border bg-muted/20">
         <Link
           to="/domains"
-          className="inline-flex items-center gap-1.5 px-5 py-2 rounded-full glass border border-border text-sm font-semibold hover:shadow-glow transition-base"
+          className="inline-flex items-center gap-1.5 px-6 py-2.5 rounded-full glass border border-border text-base font-semibold hover:shadow-glow transition-base"
         >
           Compare All TLDs Prices
           <ChevronRight className="h-4 w-4" />
