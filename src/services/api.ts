@@ -1,8 +1,4 @@
-// API-ready fetcher. Swap fetch URL when backend is live.
-import domains from "@/data/domains.json";
-import hosting from "@/data/hosting.json";
-import vps from "@/data/vps.json";
-import coupons from "@/data/coupons.json";
+// API service. Fetches from public JSON files; swap URLs when backend is live.
 
 export interface DomainOffer {
   id: string;
@@ -61,21 +57,13 @@ export interface Coupon {
   buy_link: string;
 }
 
-const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
+async function getJSON<T>(path: string): Promise<T> {
+  const res = await fetch(path, { headers: { Accept: "application/json" } });
+  if (!res.ok) throw new Error(`Failed to fetch ${path}: ${res.status}`);
+  return (await res.json()) as T;
+}
 
-export async function fetchDomains(): Promise<DomainOffer[]> {
-  await wait(150);
-  return domains as DomainOffer[];
-}
-export async function fetchHosting(): Promise<HostingOffer[]> {
-  await wait(150);
-  return hosting as HostingOffer[];
-}
-export async function fetchVps(): Promise<VpsOffer[]> {
-  await wait(150);
-  return vps as VpsOffer[];
-}
-export async function fetchCoupons(): Promise<Coupon[]> {
-  await wait(150);
-  return coupons as Coupon[];
-}
+export const fetchDomains = () => getJSON<DomainOffer[]>("/domains.json");
+export const fetchHosting = () => getJSON<HostingOffer[]>("/hosting.json");
+export const fetchVps = () => getJSON<VpsOffer[]>("/vps.json");
+export const fetchCoupons = () => getJSON<Coupon[]>("/coupons.json");
