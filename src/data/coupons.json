@@ -1,0 +1,10 @@
+[
+  { "id": "c1", "title": "Save 96% on First Year Hosting", "code": "WELCOME96", "provider": "Hostinger", "discount": "96%", "expires": "2026-12-31", "category": "hosting", "buy_link": "#" },
+  { "id": "c2", "title": "$0.99 .com Domain Registration", "code": "DOM099", "provider": "Namecheap", "discount": "$0.99", "expires": "2026-08-15", "category": "domain", "buy_link": "#" },
+  { "id": "c3", "title": "75% off VPS Hosting Annual", "code": "VPS75", "provider": "Vultr", "discount": "75%", "expires": "2026-07-30", "category": "vps", "buy_link": "#" },
+  { "id": "c4", "title": "Free Domain with any Hosting", "code": "FREEDOM", "provider": "Bluehost", "discount": "Free Domain", "expires": "2026-12-31", "category": "hosting", "buy_link": "#" },
+  { "id": "c5", "title": "30% off Cloudflare Pro Plan", "code": "CFPRO30", "provider": "Cloudflare", "discount": "30%", "expires": "2026-09-15", "category": "domain", "buy_link": "#" },
+  { "id": "c6", "title": "$200 Credit on DigitalOcean", "code": "DO200", "provider": "DigitalOcean", "discount": "$200", "expires": "2026-10-01", "category": "vps", "buy_link": "#" },
+  { "id": "c7", "title": "60% off Annual SiteGround Plans", "code": "SG60", "provider": "SiteGround", "discount": "60%", "expires": "2026-11-30", "category": "hosting", "buy_link": "#" },
+  { "id": "c8", "title": "First Year .xyz for $1", "code": "XYZ1Y", "provider": "Porkbun", "discount": "$1", "expires": "2026-12-31", "category": "domain", "buy_link": "#" }
+]
