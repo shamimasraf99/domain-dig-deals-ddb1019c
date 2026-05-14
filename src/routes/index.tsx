@@ -23,6 +23,7 @@ import {
 import { useI18n } from "@/contexts/I18nContext";
 import { fetchDomains, fetchHosting, fetchVps, fetchCoupons } from "@/services/api";
 import { ComparisonTable } from "@/components/ComparisonTable";
+import { DomainTldTable } from "@/components/DomainTldTable";
 import { HostingCard } from "@/components/HostingCard";
 import { VpsCard } from "@/components/VpsCard";
 import { CouponCard } from "@/components/CouponCard";
@@ -139,14 +140,11 @@ function Home() {
 
       {/* DOMAIN COMPARISON */}
       <Section
-        title="Compare Domain Prices"
-        subtitle="Side-by-side pricing from leading registrars"
-        action={{ label: t("view_all"), to: "/domains" }}
+        title="Domain Price Comparison"
+        subtitle="Cheapest registrar per extension — click to see all offers"
+        action={{ label: "Compare All TLDs Prices", to: "/domains" }}
       >
-        <ComparisonTable
-          offers={(domainsQ.data || []).slice(0, 8)}
-          loading={domainsQ.isLoading}
-        />
+        <DomainTldTable offers={domainsQ.data || []} loading={domainsQ.isLoading} />
       </Section>
 
       {/* FEATURED HOSTING */}
