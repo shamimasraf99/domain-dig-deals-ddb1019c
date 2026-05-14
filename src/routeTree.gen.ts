@@ -9,9 +9,15 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as HostingRouteImport } from './routes/hosting'
 import { Route as DomainsRouteImport } from './routes/domains'
 import { Route as IndexRouteImport } from './routes/index'
 
+const HostingRoute = HostingRouteImport.update({
+  id: '/hosting',
+  path: '/hosting',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DomainsRoute = DomainsRouteImport.update({
   id: '/domains',
   path: '/domains',
@@ -26,31 +32,42 @@ const IndexRoute = IndexRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/domains': typeof DomainsRoute
+  '/hosting': typeof HostingRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/domains': typeof DomainsRoute
+  '/hosting': typeof HostingRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/domains': typeof DomainsRoute
+  '/hosting': typeof HostingRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/domains'
+  fullPaths: '/' | '/domains' | '/hosting'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/domains'
-  id: '__root__' | '/' | '/domains'
+  to: '/' | '/domains' | '/hosting'
+  id: '__root__' | '/' | '/domains' | '/hosting'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   DomainsRoute: typeof DomainsRoute
+  HostingRoute: typeof HostingRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/hosting': {
+      id: '/hosting'
+      path: '/hosting'
+      fullPath: '/hosting'
+      preLoaderRoute: typeof HostingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/domains': {
       id: '/domains'
       path: '/domains'
@@ -71,7 +88,18 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   DomainsRoute: DomainsRoute,
+  HostingRoute: HostingRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
