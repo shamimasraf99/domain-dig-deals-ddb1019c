@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { DomainOffer } from "@/services/api";
 import { useCurrency } from "@/contexts/CurrencyContext";
 import { useI18n } from "@/contexts/I18nContext";
