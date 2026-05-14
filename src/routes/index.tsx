@@ -23,6 +23,7 @@ import {
 import { useI18n } from "@/contexts/I18nContext";
 import { fetchDomains, fetchHosting, fetchVps, fetchCoupons } from "@/services/api";
 import { ComparisonTable } from "@/components/ComparisonTable";
+import { DomainTldTable } from "@/components/DomainTldTable";
 import { HostingCard } from "@/components/HostingCard";
 import { VpsCard } from "@/components/VpsCard";
 import { CouponCard } from "@/components/CouponCard";
