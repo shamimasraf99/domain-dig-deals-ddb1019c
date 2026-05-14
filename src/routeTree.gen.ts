@@ -10,17 +10,25 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as VpsRouteImport } from './routes/vps'
+import { Route as RegistrarsRouteImport } from './routes/registrars'
 import { Route as HostingRouteImport } from './routes/hosting'
 import { Route as FreeDomainsRouteImport } from './routes/free-domains'
 import { Route as DomainsRouteImport } from './routes/domains'
 import { Route as CouponsRouteImport } from './routes/coupons'
+import { Route as ContactRouteImport } from './routes/contact'
 import { Route as CheapestDomainsRouteImport } from './routes/cheapest-domains'
+import { Route as BlogRouteImport } from './routes/blog'
 import { Route as BestHostingRouteImport } from './routes/best-hosting'
 import { Route as IndexRouteImport } from './routes/index'
 
 const VpsRoute = VpsRouteImport.update({
   id: '/vps',
   path: '/vps',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RegistrarsRoute = RegistrarsRouteImport.update({
+  id: '/registrars',
+  path: '/registrars',
   getParentRoute: () => rootRouteImport,
 } as any)
 const HostingRoute = HostingRouteImport.update({
@@ -43,9 +51,19 @@ const CouponsRoute = CouponsRouteImport.update({
   path: '/coupons',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ContactRoute = ContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CheapestDomainsRoute = CheapestDomainsRouteImport.update({
   id: '/cheapest-domains',
   path: '/cheapest-domains',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BlogRoute = BlogRouteImport.update({
+  id: '/blog',
+  path: '/blog',
   getParentRoute: () => rootRouteImport,
 } as any)
 const BestHostingRoute = BestHostingRouteImport.update({
@@ -62,32 +80,41 @@ const IndexRoute = IndexRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/best-hosting': typeof BestHostingRoute
+  '/blog': typeof BlogRoute
   '/cheapest-domains': typeof CheapestDomainsRoute
+  '/contact': typeof ContactRoute
   '/coupons': typeof CouponsRoute
   '/domains': typeof DomainsRoute
   '/free-domains': typeof FreeDomainsRoute
   '/hosting': typeof HostingRoute
+  '/registrars': typeof RegistrarsRoute
   '/vps': typeof VpsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/best-hosting': typeof BestHostingRoute
+  '/blog': typeof BlogRoute
   '/cheapest-domains': typeof CheapestDomainsRoute
+  '/contact': typeof ContactRoute
   '/coupons': typeof CouponsRoute
   '/domains': typeof DomainsRoute
   '/free-domains': typeof FreeDomainsRoute
   '/hosting': typeof HostingRoute
+  '/registrars': typeof RegistrarsRoute
   '/vps': typeof VpsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/best-hosting': typeof BestHostingRoute
+  '/blog': typeof BlogRoute
   '/cheapest-domains': typeof CheapestDomainsRoute
+  '/contact': typeof ContactRoute
   '/coupons': typeof CouponsRoute
   '/domains': typeof DomainsRoute
   '/free-domains': typeof FreeDomainsRoute
   '/hosting': typeof HostingRoute
+  '/registrars': typeof RegistrarsRoute
   '/vps': typeof VpsRoute
 }
 export interface FileRouteTypes {
@@ -95,42 +122,54 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/best-hosting'
+    | '/blog'
     | '/cheapest-domains'
+    | '/contact'
     | '/coupons'
     | '/domains'
     | '/free-domains'
     | '/hosting'
+    | '/registrars'
     | '/vps'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/best-hosting'
+    | '/blog'
     | '/cheapest-domains'
+    | '/contact'
     | '/coupons'
     | '/domains'
     | '/free-domains'
     | '/hosting'
+    | '/registrars'
     | '/vps'
   id:
     | '__root__'
     | '/'
     | '/best-hosting'
+    | '/blog'
     | '/cheapest-domains'
+    | '/contact'
     | '/coupons'
     | '/domains'
     | '/free-domains'
     | '/hosting'
+    | '/registrars'
     | '/vps'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   BestHostingRoute: typeof BestHostingRoute
+  BlogRoute: typeof BlogRoute
   CheapestDomainsRoute: typeof CheapestDomainsRoute
+  ContactRoute: typeof ContactRoute
   CouponsRoute: typeof CouponsRoute
   DomainsRoute: typeof DomainsRoute
   FreeDomainsRoute: typeof FreeDomainsRoute
   HostingRoute: typeof HostingRoute
+  RegistrarsRoute: typeof RegistrarsRoute
   VpsRoute: typeof VpsRoute
 }
 
@@ -141,6 +180,13 @@ declare module '@tanstack/react-router' {
       path: '/vps'
       fullPath: '/vps'
       preLoaderRoute: typeof VpsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/registrars': {
+      id: '/registrars'
+      path: '/registrars'
+      fullPath: '/registrars'
+      preLoaderRoute: typeof RegistrarsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/hosting': {
@@ -171,11 +217,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CouponsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/cheapest-domains': {
       id: '/cheapest-domains'
       path: '/cheapest-domains'
       fullPath: '/cheapest-domains'
       preLoaderRoute: typeof CheapestDomainsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/blog': {
+      id: '/blog'
+      path: '/blog'
+      fullPath: '/blog'
+      preLoaderRoute: typeof BlogRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/best-hosting': {
@@ -198,11 +258,14 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   BestHostingRoute: BestHostingRoute,
+  BlogRoute: BlogRoute,
   CheapestDomainsRoute: CheapestDomainsRoute,
+  ContactRoute: ContactRoute,
   CouponsRoute: CouponsRoute,
   DomainsRoute: DomainsRoute,
   FreeDomainsRoute: FreeDomainsRoute,
   HostingRoute: HostingRoute,
+  RegistrarsRoute: RegistrarsRoute,
   VpsRoute: VpsRoute,
 }
 export const routeTree = rootRouteImport
