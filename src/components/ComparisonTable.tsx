@@ -36,12 +36,13 @@ import {
 interface Props {
   offers: DomainOffer[];
   loading?: boolean;
+  initialSearch?: string;
 }
 
-export function ComparisonTable({ offers, loading }: Props) {
+export function ComparisonTable({ offers, loading, initialSearch = "" }: Props) {
   const { format } = useCurrency();
   const { t } = useI18n();
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState(initialSearch);
   const [registrar, setRegistrar] = useState("all");
   const [sort, setSort] = useState("registration_price");
   const [cheapestOnly, setCheapestOnly] = useState(false);
