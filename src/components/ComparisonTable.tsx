@@ -43,6 +43,7 @@ export function ComparisonTable({ offers, loading, initialSearch = "" }: Props) 
   const { format } = useCurrency();
   const { t } = useI18n();
   const [search, setSearch] = useState(initialSearch);
+  useEffect(() => { setSearch(initialSearch); }, [initialSearch]);
   const [registrar, setRegistrar] = useState("all");
   const [sort, setSort] = useState("registration_price");
   const [cheapestOnly, setCheapestOnly] = useState(false);
