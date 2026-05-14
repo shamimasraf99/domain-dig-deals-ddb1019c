@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { DomainOffer } from "@/services/api";
 import { useCurrency } from "@/contexts/CurrencyContext";
 import { useI18n } from "@/contexts/I18nContext";
@@ -36,12 +36,14 @@ import {
 interface Props {
   offers: DomainOffer[];
   loading?: boolean;
+  initialSearch?: string;
 }
 
-export function ComparisonTable({ offers, loading }: Props) {
+export function ComparisonTable({ offers, loading, initialSearch = "" }: Props) {
   const { format } = useCurrency();
   const { t } = useI18n();
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState(initialSearch);
+  useEffect(() => { setSearch(initialSearch); }, [initialSearch]);
   const [registrar, setRegistrar] = useState("all");
   const [sort, setSort] = useState("registration_price");
   const [cheapestOnly, setCheapestOnly] = useState(false);
