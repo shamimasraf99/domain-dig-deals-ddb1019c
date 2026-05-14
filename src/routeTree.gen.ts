@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as VpsRouteImport } from './routes/vps'
 import { Route as HostingRouteImport } from './routes/hosting'
 import { Route as DomainsRouteImport } from './routes/domains'
+import { Route as CouponsRouteImport } from './routes/coupons'
 import { Route as IndexRouteImport } from './routes/index'
 
 const VpsRoute = VpsRouteImport.update({
@@ -29,6 +30,11 @@ const DomainsRoute = DomainsRouteImport.update({
   path: '/domains',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CouponsRoute = CouponsRouteImport.update({
+  id: '/coupons',
+  path: '/coupons',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -37,12 +43,14 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/coupons': typeof CouponsRoute
   '/domains': typeof DomainsRoute
   '/hosting': typeof HostingRoute
   '/vps': typeof VpsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/coupons': typeof CouponsRoute
   '/domains': typeof DomainsRoute
   '/hosting': typeof HostingRoute
   '/vps': typeof VpsRoute
@@ -50,20 +58,22 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/coupons': typeof CouponsRoute
   '/domains': typeof DomainsRoute
   '/hosting': typeof HostingRoute
   '/vps': typeof VpsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/domains' | '/hosting' | '/vps'
+  fullPaths: '/' | '/coupons' | '/domains' | '/hosting' | '/vps'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/domains' | '/hosting' | '/vps'
-  id: '__root__' | '/' | '/domains' | '/hosting' | '/vps'
+  to: '/' | '/coupons' | '/domains' | '/hosting' | '/vps'
+  id: '__root__' | '/' | '/coupons' | '/domains' | '/hosting' | '/vps'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  CouponsRoute: typeof CouponsRoute
   DomainsRoute: typeof DomainsRoute
   HostingRoute: typeof HostingRoute
   VpsRoute: typeof VpsRoute
@@ -92,6 +102,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DomainsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/coupons': {
+      id: '/coupons'
+      path: '/coupons'
+      fullPath: '/coupons'
+      preLoaderRoute: typeof CouponsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -104,6 +121,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  CouponsRoute: CouponsRoute,
   DomainsRoute: DomainsRoute,
   HostingRoute: HostingRoute,
   VpsRoute: VpsRoute,
