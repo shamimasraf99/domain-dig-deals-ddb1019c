@@ -139,14 +139,11 @@ function Home() {
 
       {/* DOMAIN COMPARISON */}
       <Section
-        title="Compare Domain Prices"
-        subtitle="Side-by-side pricing from leading registrars"
-        action={{ label: t("view_all"), to: "/domains" }}
+        title="Domain Price Comparison"
+        subtitle="Cheapest registrar per extension — click to see all offers"
+        action={{ label: "Compare All TLDs Prices", to: "/domains" }}
       >
-        <ComparisonTable
-          offers={(domainsQ.data || []).slice(0, 8)}
-          loading={domainsQ.isLoading}
-        />
+        <DomainTldTable offers={domainsQ.data || []} loading={domainsQ.isLoading} />
       </Section>
 
       {/* FEATURED HOSTING */}
