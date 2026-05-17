@@ -20,10 +20,12 @@ jobs:
           node-version: 20
 
       - name: Install Dependencies
+        working-directory: scraper
         run: npm install
 
       - name: Run Scraper
-        run: node scraper/scrape.js
+        working-directory: scraper
+        run: node scrape.js
 
       - name: Commit Updated JSON
         run: |
