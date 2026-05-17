@@ -4,7 +4,8 @@ const fs = require("fs");
 async function scrapeDomains() {
 
   const browser = await puppeteer.launch({
-    headless: true
+    headless: "new",
+    args: ["--no-sandbox", "--disable-setuid-sandbox", "--disable-dev-shm-usage"]
   });
 
   const page = await browser.newPage();
@@ -38,7 +39,7 @@ async function scrapeDomains() {
   });
 
   fs.writeFileSync(
-    "./public/domains.json",
+    "../public/domains.json",
     JSON.stringify(domains, null, 2)
   );
 
