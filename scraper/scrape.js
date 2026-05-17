@@ -4,7 +4,8 @@ const fs = require("fs");
 async function scrapeDomains() {
 
   const browser = await puppeteer.launch({
-    headless: true
+    headless: "new",
+    args: ["--no-sandbox", "--disable-setuid-sandbox", "--disable-dev-shm-usage"]
   });
 
   const page = await browser.newPage();
