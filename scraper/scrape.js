@@ -39,7 +39,7 @@ async function scrapeDomains() {
   });
 
   fs.writeFileSync(
-    "./public/domains.json",
+    "../public/domains.json",
     JSON.stringify(domains, null, 2)
   );
 
