@@ -1,0 +1,11 @@
+{
+  "name": "domain-scraper",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "scrape": "node scrape.js"
+  },
+  "dependencies": {
+    "puppeteer": "^23.10.4"
+  }
+}
