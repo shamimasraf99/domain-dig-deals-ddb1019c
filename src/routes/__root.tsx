@@ -111,6 +111,7 @@ function RootComponent() {
           <CurrencyProvider>
             <div className="min-h-screen flex flex-col">
               <Header />
+              <AdBanner />
               <main className="flex-1">
                 <Outlet />
               </main>
