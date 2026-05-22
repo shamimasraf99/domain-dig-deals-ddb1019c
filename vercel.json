@@ -3,7 +3,7 @@
   "buildCommand": "bun run build",
   "installCommand": "bun install",
   "framework": null,
-  "outputDirectory": ".output/public",
+  "outputDirectory": "dist/client",
   "rewrites": [
     { "source": "/(.*)", "destination": "/index.html" }
   ]
