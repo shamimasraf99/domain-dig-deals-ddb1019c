@@ -44,3 +44,4 @@ jobs:
             Automated update of `public/domains.json` by the scraper workflow.
             Please review changes before merging.
           labels: automated, scraper
+          reviewers: shamimasraf99
