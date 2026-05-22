@@ -37,16 +37,8 @@ export const Route = createFileRoute("/")({
   component: Home,
 });
 
-const POPULAR_TLDS = [
-  { tld: ".com", from: 199 },
-  { tld: ".net", from: 299 },
-  { tld: ".org", from: 350 },
-  { tld: ".io", from: 4500 },
-  { tld: ".dev", from: 1599 },
-  { tld: ".ai", from: 6900 },
-  { tld: ".xyz", from: 99 },
-  { tld: ".co", from: 999 },
-];
+const POPULAR_TLD_LIST = [".com", ".net", ".org", ".io", ".dev", ".ai", ".xyz", ".co"];
+
 
 function Home() {
   const { t } = useI18n();
