@@ -205,28 +205,41 @@ function registrar_slug(string $name): string {
 
 /* ---------------------- Pipeline ---------------------- */
 
-echo "==> Fetching /price-compare (per_page=" . COMPARE_PER_PAGE . ")\n";
+echo "==> Fetching /price-compare (scan until empty)\n";
 
-$firstUrl  = BASE_URL . '/price-compare?per_page=' . COMPARE_PER_PAGE . '&page=1';
-$firstHtml = http_get($firstUrl);
-if ($firstHtml === null) { fwrite(STDERR, "Failed: $firstUrl\n"); exit(1); }
+$compareRows = [];
+$seenTlds    = [];
+$maxPages    = 400; // safety cap (site reports ~335 pages)
+$batchSize   = CONCURRENCY;
+$nextPage    = 1;
+$stop        = false;
 
-$totalPages = parse_total_pages($firstHtml);
-echo "    total pages: $totalPages\n";
-
-$compareRows = parse_compare_page($firstHtml);
-if ($totalPages > 1) {
+while (!$stop && $nextPage <= $maxPages) {
     $urls = [];
-    for ($p = 2; $p <= $totalPages; $p++) {
-        $urls[$p] = BASE_URL . '/price-compare?per_page=' . COMPARE_PER_PAGE . '&page=' . $p;
+    for ($i = 0; $i < $batchSize && ($nextPage + $i) <= $maxPages; $i++) {
+        $p = $nextPage + $i;
+        $urls[$p] = BASE_URL . '/price-compare?page=' . $p;
     }
     $pages = http_get_many($urls);
+    ksort($pages);
     foreach ($pages as $p => $html) {
         if ($html === null) { echo "    !! page $p failed\n"; continue; }
-        $compareRows = array_merge($compareRows, parse_compare_page($html));
+        $rows = parse_compare_page($html);
+        $newRows = [];
+        foreach ($rows as $r) {
+            $key = $r['tld'] . '|' . ($r['cheapest_registrar'] ?? '');
+            if ($r['tld'] === '' || isset($seenTlds[$key])) continue;
+            $seenTlds[$key] = true;
+            $newRows[] = $r;
+        }
+        if (!$newRows) { $stop = true; break; }
+        $compareRows = array_merge($compareRows, $newRows);
     }
+    echo "    pages " . $nextPage . "-" . ($nextPage + $batchSize - 1) . " — total TLDs so far: " . count($compareRows) . "\n";
+    $nextPage += $batchSize;
 }
 echo "    extensions discovered: " . count($compareRows) . "\n";
+
 
 $offers = [];
 $idx    = 0;
