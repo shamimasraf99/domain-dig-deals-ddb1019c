@@ -101,20 +101,25 @@ function Home() {
       {/* POPULAR EXTENSIONS */}
       <Section title="Popular extensions" subtitle="Find your perfect TLD">
         <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3">
-          {POPULAR_TLDS.map((p) => (
-            <Link
-              key={p.tld}
-              to="/domains"
-              search={{ tld: p.tld }}
-              className="glass rounded-xl p-4 text-center hover:shadow-glow hover:-translate-y-1 transition-base group"
-            >
-              <div className="font-display text-2xl font-bold text-gradient">
-                {p.tld}
-              </div>
-              <div className="text-xs text-muted-foreground mt-1">from</div>
-              <div className="text-sm font-semibold">৳{p.from}</div>
-            </Link>
-          ))}
+          {POPULAR_TLD_LIST.map((tld) => {
+            const offers = (domainsQ.data || []).filter((o) => o.domain === tld);
+            const cheapest = offers.length
+              ? offers.reduce((a, b) =>
+                  (a.registration_price ?? Infinity) < (b.registration_price ?? Infinity) ? a : b,
+                )
+              : null;
+            return (
+              <Link
+                key={tld}
+                to="/domains"
+                search={{ tld }}
+                className="glass rounded-xl p-4 text-center hover:shadow-glow hover:-translate-y-1 transition-base group"
+              >
+                <div className="font-display text-2xl font-bold text-gradient">{tld}</div>
+                <div className="text-xs text-muted-foreground mt-1">from</div>
+                <div className="text-sm font-semibold">
+                  {cheapest ? format(cheapest.registration_price) : "—"}
+
         </div>
       </Section>
 
