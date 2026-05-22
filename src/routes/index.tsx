@@ -188,6 +188,10 @@ function Home() {
           </Accordion>
         </div>
       </Section>
+
+      {/* AD: footer bottom */}
+      <AdSlot label="Footer 728x90" heightClass="min-h-[90px] md:min-h-[100px]" />
+
     </div>
   );
 }
