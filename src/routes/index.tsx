@@ -149,6 +149,11 @@ function Home() {
         <DomainTldTable offers={domainsQ.data || []} loading={domainsQ.isLoading} />
       </Section>
 
+      {/* AD: before FAQ */}
+      <AdSlot label="Mid-Page 728x90" heightClass="min-h-[90px] md:min-h-[100px]" />
+
+
+
       {/* FAQ */}
       <Section title="Frequently asked questions" subtitle="Everything you need to know">
         <div className="max-w-3xl mx-auto">
