@@ -19,6 +19,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { useI18n } from "@/contexts/I18nContext";
+import { useCurrency } from "@/contexts/CurrencyContext";
 import { fetchDomains } from "@/services/api";
 import { DomainTldTable } from "@/components/DomainTldTable";
 
