@@ -6,14 +6,13 @@
 import { defineConfig } from "vite";
 import { tanstackStart } from "@tanstack/react-start/plugin/vite";
 
-// Use Vercel target when building on Vercel (sets VERCEL=1 automatically),
-// otherwise build as a static site for local/Cloudflare workflows.
-const target = process.env.VERCEL ? "vercel" : "static";
+// On Vercel (VERCEL env auto-set) use the vercel preset; otherwise static.
+const target = (process.env.VERCEL ? "vercel" : "static") as "vercel" | "static";
 
 export default defineConfig({
   plugins: [
     tanstackStart({
       target,
-    }),
+    } as Parameters<typeof tanstackStart>[0]),
   ],
 });
