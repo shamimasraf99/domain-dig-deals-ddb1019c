@@ -22,6 +22,7 @@ import { useI18n } from "@/contexts/I18nContext";
 import { useCurrency } from "@/contexts/CurrencyContext";
 import { fetchDomains } from "@/services/api";
 import { DomainTldTable } from "@/components/DomainTldTable";
+import { AdSlot } from "@/components/AdSlot";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -101,6 +102,10 @@ function Home() {
         </div>
       </section>
 
+      {/* AD: below hero */}
+      <AdSlot label="Top Banner 728x90" heightClass="min-h-[90px] md:min-h-[100px]" />
+
+
       {/* POPULAR EXTENSIONS */}
       <Section title="Popular extensions" subtitle="Find your perfect TLD">
         <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3">
@@ -129,6 +134,11 @@ function Home() {
         </div>
       </Section>
 
+      {/* AD: between sections */}
+      <AdSlot label="In-Content 300x250" heightClass="min-h-[250px]" />
+
+
+
 
       {/* DOMAIN COMPARISON */}
       <Section
@@ -138,6 +148,11 @@ function Home() {
       >
         <DomainTldTable offers={domainsQ.data || []} loading={domainsQ.isLoading} />
       </Section>
+
+      {/* AD: before FAQ */}
+      <AdSlot label="Mid-Page 728x90" heightClass="min-h-[90px] md:min-h-[100px]" />
+
+
 
       {/* FAQ */}
       <Section title="Frequently asked questions" subtitle="Everything you need to know">
@@ -173,6 +188,10 @@ function Home() {
           </Accordion>
         </div>
       </Section>
+
+      {/* AD: footer bottom */}
+      <AdSlot label="Footer 728x90" heightClass="min-h-[90px] md:min-h-[100px]" />
+
     </div>
   );
 }

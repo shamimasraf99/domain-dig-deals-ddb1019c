@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { ArrowLeft, ExternalLink, Loader2 } from "lucide-react";
 import { getTldOffers } from "@/lib/tld.functions";
 import { useCurrency } from "@/contexts/CurrencyContext";
+import { AdSlot } from "@/components/AdSlot";
 
 export const Route = createFileRoute("/tld/$tld")({
   head: ({ params }) => {
@@ -76,6 +77,10 @@ function TldPage() {
           Compare {displayTld} domain prices across all registrars. Sorted by cheapest first.
         </p>
       </header>
+
+      <AdSlot label="TLD Page Top 728x90" heightClass="min-h-[90px] md:min-h-[100px]" className="!my-4 !px-0" />
+
+
 
       {q.isLoading && (
         <div className="glass rounded-2xl p-12 text-center text-muted-foreground flex flex-col items-center gap-3">
