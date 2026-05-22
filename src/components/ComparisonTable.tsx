@@ -94,15 +94,9 @@ export function ComparisonTable({ offers, loading, initialSearch = "" }: Props) 
                       {format(o.renewal_price)}
                     </td>
                     <td className="px-5 py-4 text-right">
-                      <Button asChild size="sm" className="gradient-primary border-0">
+                      <Button asChild size="sm" className="gradient-primary border-1">
                         <a
-                          href={
-                            o.buy_link && o.buy_link !== "#"
-                              ? o.buy_link.startsWith("http")
-                                ? o.buy_link
-                                : `https://domainoffer.net${o.buy_link.startsWith("/") ? "" : "/"}${o.buy_link}`
-                              : "#"
-                          }
+                          href={getRegistrarUrl(o.registrar, o.domain)}
                           target="_blank"
                           rel="noopener noreferrer sponsored"
                         >
