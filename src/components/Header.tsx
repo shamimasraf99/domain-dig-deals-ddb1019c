@@ -13,7 +13,7 @@ import {
 import { Button } from "@/components/ui/button";
 
 export function Header() {
-  const { theme, toggle } = useTheme();
+  const { theme, toggleTheme } = useTheme();
   const { lang, setLang } = useI18n();
   const { currency, setCurrency } = useCurrency();
   const [open, setOpen] = useState(false);
@@ -86,7 +86,7 @@ export function Header() {
               </DropdownMenuContent>
             </DropdownMenu>
 
-            <Button variant="ghost" size="icon" onClick={toggle} aria-label="Toggle theme">
+            <Button variant="ghost" size="icon" onClick={toggleTheme} aria-label="Toggle theme">
               {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
             </Button>
 
