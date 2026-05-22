@@ -150,13 +150,7 @@ function TldPage() {
                     </td>
                     <td className="px-4 md:px-6 py-4 text-right">
                       <a
-                        href={
-                          o.offer_url
-                            ? o.offer_url.startsWith("http")
-                              ? o.offer_url
-                              : `https://domainoffer.net${o.offer_url}`
-                            : "#"
-                        }
+                        href={getRegistrarUrl(o.registrar, `.${tld}`)}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full gradient-primary text-primary-foreground text-xs md:text-sm font-semibold shadow-soft hover:shadow-glow transition-base"
