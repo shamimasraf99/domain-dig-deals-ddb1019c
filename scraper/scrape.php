@@ -13,51 +13,84 @@
 declare(strict_types=1);
 
 const BASE_URL          = 'https://domainoffer.net';
+const FIRECRAWL_URL     = 'https://api.firecrawl.dev/v2/scrape';
 const COMPARE_PER_PAGE  = 100;
 const TLD_PER_PAGE      = 100;
-const CONCURRENCY       = 10;
-const REQUEST_TIMEOUT   = 30;
-const USER_AGENT        = 'DomainDealsScraper/1.0 (+github actions)';
+const CONCURRENCY       = 5;
+const REQUEST_TIMEOUT   = 120;
+const USER_AGENT        = 'DomainDealsScraper/1.0';
 const OUTPUT_FILE       = __DIR__ . '/../public/domains.json';
+
+$FIRECRAWL_API_KEY = getenv('FIRECRAWL_API_KEY') ?: '';
+if ($FIRECRAWL_API_KEY === '') {
+    fwrite(STDERR, "ERROR: FIRECRAWL_API_KEY env var is required.\n");
+    exit(1);
+}
 
 $quick = in_array('--quick', $argv, true);
 
 /* ---------------------- HTTP helpers ---------------------- */
 
+function firecrawl_payload(string $url): string {
+    return json_encode([
+        'url'            => $url,
+        'formats'        => ['html'],
+        'onlyMainContent'=> false,
+        'waitFor'        => 1500,
+    ]);
+}
+
+function firecrawl_extract_html($body): ?string {
+    if (!is_string($body) || $body === '') return null;
+    $j = json_decode($body, true);
+    if (!is_array($j) || empty($j['success'])) return null;
+    return $j['data']['html'] ?? $j['data']['rawHtml'] ?? $j['html'] ?? null;
+}
+
 function http_get(string $url): ?string {
-    $ch = curl_init($url);
+    global $FIRECRAWL_API_KEY;
+    $ch = curl_init(FIRECRAWL_URL);
     curl_setopt_array($ch, [
         CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_FOLLOWLOCATION => true,
+        CURLOPT_POST           => true,
+        CURLOPT_POSTFIELDS     => firecrawl_payload($url),
         CURLOPT_TIMEOUT        => REQUEST_TIMEOUT,
         CURLOPT_USERAGENT      => USER_AGENT,
-        CURLOPT_HTTPHEADER     => ['Accept: text/html'],
+        CURLOPT_HTTPHEADER     => [
+            'Content-Type: application/json',
+            'Authorization: Bearer ' . $FIRECRAWL_API_KEY,
+        ],
     ]);
     $body = curl_exec($ch);
     $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
     curl_close($ch);
     if ($body === false || $code >= 400) return null;
-    return $body;
+    return firecrawl_extract_html($body);
 }
 
 /**
- * Parallel GET. $urls: assoc [key => url]. Returns [key => htmlOrNull].
+ * Parallel scrape via Firecrawl. $urls: assoc [key => url]. Returns [key => htmlOrNull].
  */
 function http_get_many(array $urls, int $concurrency = CONCURRENCY): array {
+    global $FIRECRAWL_API_KEY;
     $results = [];
     $keys    = array_keys($urls);
     $chunks  = array_chunk($keys, $concurrency);
     foreach ($chunks as $chunk) {
-        $mh   = curl_multi_init();
-        $hs   = [];
+        $mh = curl_multi_init();
+        $hs = [];
         foreach ($chunk as $k) {
-            $ch = curl_init($urls[$k]);
+            $ch = curl_init(FIRECRAWL_URL);
             curl_setopt_array($ch, [
                 CURLOPT_RETURNTRANSFER => true,
-                CURLOPT_FOLLOWLOCATION => true,
+                CURLOPT_POST           => true,
+                CURLOPT_POSTFIELDS     => firecrawl_payload($urls[$k]),
                 CURLOPT_TIMEOUT        => REQUEST_TIMEOUT,
                 CURLOPT_USERAGENT      => USER_AGENT,
-                CURLOPT_HTTPHEADER     => ['Accept: text/html'],
+                CURLOPT_HTTPHEADER     => [
+                    'Content-Type: application/json',
+                    'Authorization: Bearer ' . $FIRECRAWL_API_KEY,
+                ],
             ]);
             curl_multi_add_handle($mh, $ch);
             $hs[$k] = $ch;
@@ -70,7 +103,7 @@ function http_get_many(array $urls, int $concurrency = CONCURRENCY): array {
         foreach ($hs as $k => $ch) {
             $body = curl_multi_getcontent($ch);
             $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-            $results[$k] = ($body !== false && $code < 400) ? $body : null;
+            $results[$k] = ($body !== false && $code < 400) ? firecrawl_extract_html($body) : null;
             curl_multi_remove_handle($mh, $ch);
             curl_close($ch);
         }
@@ -78,6 +111,7 @@ function http_get_many(array $urls, int $concurrency = CONCURRENCY): array {
     }
     return $results;
 }
+
 
 /* ---------------------- HTML parsing ---------------------- */
 
