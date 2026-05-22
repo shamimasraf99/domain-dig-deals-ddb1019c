@@ -9,6 +9,7 @@ export type TldRegistrarOffer = {
   renewal_price: number | null;
   transfer_price: number | null;
   offer_url: string | null;
+  coupon_code: string | null;
 };
 
 function parsePrice(raw: string): number | null {
@@ -18,8 +19,32 @@ function parsePrice(raw: string): number | null {
   return m ? parseFloat(m[1]) : null;
 }
 
-function parseTldHtml(html: string): TldRegistrarOffer[] {
+function normalizeRegistrar(name: string): string {
+  return name.toLowerCase().replace(/[^a-z0-9]/g, "");
+}
+
+function parseTldHtml(html: string): {
+  rows: TldRegistrarOffer[];
+  coupons: Record<string, string>;
+} {
   const $ = cheerio.load(html);
+
+  // Coupons live in "top-deal" promotional blocks. Map registrar => coupon code.
+  const coupons: Record<string, string> = {};
+  $(".top-deal-info, .top-deal").each((_, el) => {
+    const $el = $(el);
+    const reg = $el.find(".top-deal-registrar").first().text().trim();
+    const code = $el.find(".couponCode").first().text().trim();
+    if (reg && code) coupons[normalizeRegistrar(reg)] = code;
+  });
+  // Fallback: any couponCode in document, paired with closest preceding registrar-name
+  $(".couponCode").each((_, el) => {
+    const code = $(el).text().trim();
+    if (!code) return;
+    const reg = $(el).closest(".top-deal-info, .top-deal, tr").find(".top-deal-registrar, .registrar-name").first().text().trim();
+    if (reg && !coupons[normalizeRegistrar(reg)]) coupons[normalizeRegistrar(reg)] = code;
+  });
+
   const rows: TldRegistrarOffer[] = [];
   $("tbody#domain-table-body tr").each((_, tr) => {
     const $tr = $(tr);
@@ -39,9 +64,11 @@ function parseTldHtml(html: string): TldRegistrarOffer[] {
       renewal_price: renew,
       transfer_price: transfer,
       offer_url: offerUrl,
+      coupon_code: coupons[normalizeRegistrar(registrar)] ?? null,
     });
   });
-  return rows;
+
+  return { rows, coupons };
 }
 
 export const getTldOffers = createServerFn({ method: "GET" })
@@ -54,13 +81,14 @@ export const getTldOffers = createServerFn({ method: "GET" })
     const apiKey = process.env.FIRECRAWL_API_KEY;
     if (!apiKey) throw new Error("FIRECRAWL_API_KEY not configured");
     const firecrawl = new Firecrawl({ apiKey });
-    const url = `https://domainoffer.net/tld/${encodeURIComponent(data.tld)}?per_page=100&page=1`;
 
     const all: TldRegistrarOffer[] = [];
-    let page = 1;
+    const allCoupons: Record<string, string> = {};
     const seen = new Set<string>();
-    while (page <= 10) {
-      const pageUrl = `https://domainoffer.net/tld/${encodeURIComponent(data.tld)}?per_page=100&page=${page}`;
+    const MAX_PAGES = 20;
+
+    for (let page = 1; page <= MAX_PAGES; page++) {
+      const pageUrl = `https://domainoffer.net/tld/${encodeURIComponent(data.tld)}?page=${page}`;
       const res = await firecrawl.scrape(pageUrl, {
         formats: ["html"],
         onlyMainContent: false,
@@ -71,7 +99,8 @@ export const getTldOffers = createServerFn({ method: "GET" })
         (res as { rawHtml?: string }).rawHtml ??
         "";
       if (!html) break;
-      const rows = parseTldHtml(html);
+      const { rows, coupons } = parseTldHtml(html);
+      Object.assign(allCoupons, coupons);
       const fresh = rows.filter((r) => {
         const k = r.registrar + "|" + (r.registration_price ?? "");
         if (seen.has(k)) return false;
@@ -80,10 +109,17 @@ export const getTldOffers = createServerFn({ method: "GET" })
       });
       if (fresh.length === 0) break;
       all.push(...fresh);
-      if (rows.length < 100) break;
-      page++;
+      // Site renders ~10 rows per page; stop only when no new rows return.
     }
-    void url;
+
+    // Final pass: ensure coupons gathered later attach to earlier rows
+    for (const r of all) {
+      if (!r.coupon_code) {
+        const c = allCoupons[normalizeRegistrar(r.registrar)];
+        if (c) r.coupon_code = c;
+      }
+    }
+
     all.sort((a, b) => {
       const ap = a.registration_price ?? Infinity;
       const bp = b.registration_price ?? Infinity;
