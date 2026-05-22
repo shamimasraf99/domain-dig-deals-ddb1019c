@@ -134,6 +134,11 @@ function Home() {
         </div>
       </Section>
 
+      {/* AD: between sections */}
+      <AdSlot label="In-Content 300x250" heightClass="min-h-[250px]" />
+
+
+
 
       {/* DOMAIN COMPARISON */}
       <Section
