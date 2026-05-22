@@ -14,6 +14,7 @@ import { I18nProvider } from "@/contexts/I18nContext";
 import { CurrencyProvider } from "@/contexts/CurrencyContext";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
+import { AdBanner } from "@/components/AdBanner";
 import { Toaster } from "@/components/ui/sonner";
 
 function NotFoundComponent() {
@@ -110,6 +111,7 @@ function RootComponent() {
           <CurrencyProvider>
             <div className="min-h-screen flex flex-col">
               <Header />
+              <AdBanner />
               <main className="flex-1">
                 <Outlet />
               </main>
