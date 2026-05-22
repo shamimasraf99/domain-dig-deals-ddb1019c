@@ -3,7 +3,6 @@ name: Auto Domain Scraper
 on:
   schedule:
     - cron: "*/30 * * * *"
-
   workflow_dispatch:
 
 permissions:
@@ -18,18 +17,16 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v6
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v6
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
         with:
-          node-version: 22
+          php-version: "8.3"
+          extensions: curl, dom, libxml, mbstring
+          coverage: none
 
-      - name: Install Dependencies
+      - name: Run PHP Scraper
         working-directory: scraper
-        run: npm install
-
-      - name: Run Scraper
-        working-directory: scraper
-        run: node scrape.js
+        run: php scrape.php
 
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v7
@@ -41,7 +38,8 @@ jobs:
           delete-branch: true
           title: "chore: auto update domains.json"
           body: |
-            Automated update of `public/domains.json` by the scraper workflow.
+            Automated update of `public/domains.json` by the PHP scraper workflow.
+            Includes every TLD and every registrar offer scraped from domainoffer.net.
             Please review changes before merging.
           labels: automated, scraper
           reviewers: shamimasraf99
