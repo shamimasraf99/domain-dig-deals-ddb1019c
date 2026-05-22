@@ -62,8 +62,8 @@ export function DomainTldTable({ offers, loading }: Props) {
                 >
                   <td className="px-6 py-6">
                     <Link
-                      to="/domains"
-                      search={{ tld: r.tld }}
+                      to="/tld/$tld"
+                      params={{ tld: r.tld.replace(/^\./, "") }}
                       className="font-display text-xl md:text-2xl font-bold text-gradient hover:opacity-80"
                     >
                       {r.tld}
@@ -77,11 +77,11 @@ export function DomainTldTable({ offers, loading }: Props) {
                   </td>
                   <td className="px-6 py-6 text-right">
                     <Link
-                      to="/domains"
-                      search={{ tld: r.tld }}
+                      to="/tld/$tld"
+                      params={{ tld: r.tld.replace(/^\./, "") }}
                       className="inline-flex items-center gap-1 px-4 py-2 rounded-full gradient-primary text-primary-foreground text-sm font-semibold shadow-soft hover:shadow-glow transition-base"
                     >
-                      + {r.more} more
+                      Compare Registrars
                     </Link>
                   </td>
                 </tr>
