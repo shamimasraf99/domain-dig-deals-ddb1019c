@@ -170,10 +170,23 @@ function parse_total_pages(string $html): int {
 }
 
 /**
- * Parse /tld/{tld} page rows: [registrar, new, icann_fee, renew, transfer, offer_url].
+ * Parse /tld/{tld} page rows.
+ * Coupon codes live in separate "top-deal" promotional blocks and are mapped by registrar.
  */
 function parse_tld_page(string $html): array {
     $xp   = load_dom($html);
+
+    // Build registrar => coupon map from top-deal promotional blocks
+    $coupons = [];
+    foreach ($xp->query('//div[contains(@class,"top-deal-info") or contains(@class,"top-deal")]') as $blk) {
+        $regNode  = $xp->query('.//*[contains(@class,"top-deal-registrar")]', $blk)->item(0);
+        $codeNode = $xp->query('.//*[contains(@class,"couponCode")]', $blk)->item(0);
+        if ($regNode && $codeNode) {
+            $k = strtolower(preg_replace('/[^a-z0-9]/i', '', text($regNode)));
+            if ($k !== '') $coupons[$k] = text($codeNode);
+        }
+    }
+
     $out  = [];
     foreach ($xp->query('//tbody[@id="domain-table-body"]/tr') as $tr) {
         $tds = $xp->query('./td', $tr);
@@ -185,13 +198,16 @@ function parse_tld_page(string $html): array {
         $renew     = $xp->query('.//span[contains(@class,"price-text")]', $tds->item(3))->item(0);
         $transfer  = $xp->query('.//span[contains(@class,"price-text")]', $tds->item(4))->item(0);
         if (!$reg) continue;
+        $regName = text($reg);
+        $k = strtolower(preg_replace('/[^a-z0-9]/i', '', $regName));
         $out[] = [
-            'registrar'          => text($reg),
+            'registrar'          => $regName,
             'registration_price' => $new ? parse_price(text($new)) : null,
             'icann_fee'          => $icann ? parse_price(text($icann)) : null,
             'renewal_price'      => $renew ? parse_price(text($renew)) : null,
             'transfer_price'     => $transfer ? parse_price(text($transfer)) : null,
             'offer_url'          => $offerLink ? $offerLink->getAttribute('href') : null,
+            'coupon_code'        => $coupons[$k] ?? '',
         ];
     }
     return $out;
