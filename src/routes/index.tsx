@@ -102,6 +102,10 @@ function Home() {
         </div>
       </section>
 
+      {/* AD: below hero */}
+      <AdSlot label="Top Banner 728x90" heightClass="min-h-[90px] md:min-h-[100px]" />
+
+
       {/* POPULAR EXTENSIONS */}
       <Section title="Popular extensions" subtitle="Find your perfect TLD">
         <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3">
