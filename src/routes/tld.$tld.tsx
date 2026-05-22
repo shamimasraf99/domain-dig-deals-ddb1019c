@@ -5,6 +5,7 @@ import { ArrowLeft, ExternalLink, Loader2 } from "lucide-react";
 import { getTldOffers } from "@/lib/tld.functions";
 import { useCurrency } from "@/contexts/CurrencyContext";
 import { AdSlot } from "@/components/AdSlot";
+import { getRegistrarUrl } from "@/lib/registrarUrls";
 
 export const Route = createFileRoute("/tld/$tld")({
   head: ({ params }) => {
