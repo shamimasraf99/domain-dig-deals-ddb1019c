@@ -106,6 +106,7 @@ function TldPage() {
                   <th className="px-4 md:px-6 py-4 text-left font-semibold">ICANN Fee</th>
                   <th className="px-4 md:px-6 py-4 text-left font-semibold">Renewal</th>
                   <th className="px-4 md:px-6 py-4 text-left font-semibold">Transfer</th>
+                  <th className="px-4 md:px-6 py-4 text-left font-semibold">Coupon</th>
                   <th className="px-4 md:px-6 py-4 text-right font-semibold">Visit</th>
                 </tr>
               </thead>
@@ -136,6 +137,15 @@ function TldPage() {
                     </td>
                     <td className="px-4 md:px-6 py-4 text-muted-foreground">
                       {o.transfer_price != null ? format(o.transfer_price) : "—"}
+                    </td>
+                    <td className="px-4 md:px-6 py-4">
+                      {o.coupon_code ? (
+                        <span className="inline-flex items-center px-2 py-1 rounded-md bg-success/10 text-success font-mono text-xs font-bold border border-success/30">
+                          {o.coupon_code}
+                        </span>
+                      ) : (
+                        <span className="text-muted-foreground">—</span>
+                      )}
                     </td>
                     <td className="px-4 md:px-6 py-4 text-right">
                       <a
