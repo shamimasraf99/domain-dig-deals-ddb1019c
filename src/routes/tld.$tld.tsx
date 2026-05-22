@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { ArrowLeft, ExternalLink, Loader2 } from "lucide-react";
 import { getTldOffers } from "@/lib/tld.functions";
 import { useCurrency } from "@/contexts/CurrencyContext";
+import { AdSlot } from "@/components/AdSlot";
 
 export const Route = createFileRoute("/tld/$tld")({
   head: ({ params }) => {
