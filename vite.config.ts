@@ -3,10 +3,10 @@ import { defineConfig } from "@lovable.dev/vite-tanstack-config";
 export default defineConfig({
   tanstackStart: {
     target: "static",
-    prerender: {
+    spa: {
       enabled: true,
-      crawlLinks: true,
+      prerender: { outputPath: "/index" },
     },
-    pages: [{ path: "/" }],
+    prerender: { enabled: true },
   },
 });
