@@ -2,14 +2,15 @@ import { createContext, useContext, useEffect, useState, ReactNode } from "react
 
 export type Currency = "USD" | "BDT" | "INR" | "GBP" | "EUR";
 
-// Base prices in JSON are stored in BDT
+// Base prices in JSON are stored in USD (scraped from domainoffer.net)
 const RATES: Record<Currency, number> = {
-  BDT: 1,
-  USD: 0.0091,
-  INR: 0.76,
-  GBP: 0.0072,
-  EUR: 0.0084,
+  USD: 1,
+  BDT: 110,
+  INR: 83,
+  GBP: 0.79,
+  EUR: 0.92,
 };
+
 
 const SYMBOLS: Record<Currency, string> = {
   USD: "$",
