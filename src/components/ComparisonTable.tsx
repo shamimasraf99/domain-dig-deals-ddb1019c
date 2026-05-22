@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { DomainOffer } from "@/services/api";
 import { useCurrency } from "@/contexts/CurrencyContext";
+import { getRegistrarUrl } from "@/lib/registrarUrls";
 
 interface Props {
   offers: DomainOffer[];
