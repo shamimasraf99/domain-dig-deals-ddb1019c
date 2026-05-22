@@ -6,10 +6,13 @@
 import { defineConfig } from "vite";
 import { tanstackStart } from "@tanstack/react-start/plugin/vite";
 
+// On Vercel (VERCEL env auto-set) use the vercel preset; otherwise static.
+const target = (process.env.VERCEL ? "vercel" : "static") as "vercel" | "static";
+
 export default defineConfig({
   plugins: [
     tanstackStart({
-      target: "static",
-    }),
+      target,
+    } as Parameters<typeof tanstackStart>[0]),
   ],
 });
