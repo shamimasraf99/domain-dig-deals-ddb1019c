@@ -30,18 +30,14 @@ jobs:
 
 
 
-      - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v7
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          add-paths: public/domains.json
-          commit-message: "chore: auto update domains.json [skip ci]"
-          branch: auto/update-domains
-          delete-branch: true
-          title: "chore: auto update domains.json"
-          body: |
-            Automated update of `public/domains.json` by the PHP scraper workflow.
-            Includes every TLD and every registrar offer scraped from domainoffer.net.
-            Please review changes before merging.
-          labels: automated, scraper
-          reviewers: shamimasraf99
+      - name: Commit and push changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if git diff --quiet public/domains.json; then
+            echo "No changes to commit"
+            exit 0
+          fi
+          git add public/domains.json
+          git commit -m "chore: auto update domains.json [skip ci]"
+          git push
