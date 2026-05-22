@@ -1,5 +1,4 @@
 import { createServerFn } from "@tanstack/react-start";
-import Firecrawl from "@mendable/firecrawl-js";
 import * as cheerio from "cheerio";
 
 export type TldRegistrarOffer = {
@@ -78,10 +77,6 @@ export const getTldOffers = createServerFn({ method: "GET" })
     return { tld };
   })
   .handler(async ({ data }) => {
-    const apiKey = process.env.FIRECRAWL_API_KEY;
-    if (!apiKey) throw new Error("FIRECRAWL_API_KEY not configured");
-    const firecrawl = new Firecrawl({ apiKey });
-
     const all: TldRegistrarOffer[] = [];
     const allCoupons: Record<string, string> = {};
     const seen = new Set<string>();
@@ -89,15 +84,22 @@ export const getTldOffers = createServerFn({ method: "GET" })
 
     for (let page = 1; page <= MAX_PAGES; page++) {
       const pageUrl = `https://domainoffer.net/tld/${encodeURIComponent(data.tld)}?page=${page}`;
-      const res = await firecrawl.scrape(pageUrl, {
-        formats: ["html"],
-        onlyMainContent: false,
-        waitFor: 1500,
-      });
-      const html =
-        (res as { html?: string }).html ??
-        (res as { rawHtml?: string }).rawHtml ??
-        "";
+      let html = "";
+      try {
+        const res = await fetch(pageUrl, {
+          headers: {
+            "User-Agent":
+              "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36",
+            "Accept": "text/html,application/xhtml+xml",
+            "Accept-Language": "en-US,en;q=0.9",
+          },
+        });
+        if (!res.ok) break;
+        html = await res.text();
+      } catch (e) {
+        console.error("fetch failed", pageUrl, e);
+        break;
+      }
       if (!html) break;
       const { rows, coupons } = parseTldHtml(html);
       Object.assign(allCoupons, coupons);
@@ -109,8 +111,8 @@ export const getTldOffers = createServerFn({ method: "GET" })
       });
       if (fresh.length === 0) break;
       all.push(...fresh);
-      // Site renders ~10 rows per page; stop only when no new rows return.
     }
+
 
     // Final pass: ensure coupons gathered later attach to earlier rows
     for (const r of all) {
