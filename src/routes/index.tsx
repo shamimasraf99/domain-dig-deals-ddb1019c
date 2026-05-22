@@ -119,9 +119,13 @@ function Home() {
                 <div className="text-xs text-muted-foreground mt-1">from</div>
                 <div className="text-sm font-semibold">
                   {cheapest ? format(cheapest.registration_price) : "—"}
-
+                </div>
+              </Link>
+            );
+          })}
         </div>
       </Section>
+
 
       {/* DOMAIN COMPARISON */}
       <Section
