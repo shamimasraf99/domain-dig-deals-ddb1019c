@@ -114,8 +114,8 @@ function Home() {
             return (
               <Link
                 key={tld}
-                to="/domains"
-                search={{ tld }}
+                to="/tld/$tld"
+                params={{ tld: tld.replace(/^\./, "") }}
                 className="glass rounded-xl p-4 text-center hover:shadow-glow hover:-translate-y-1 transition-base group"
               >
                 <div className="font-display text-2xl font-bold text-gradient">{tld}</div>

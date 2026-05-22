@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as DomainsRouteImport } from './routes/domains'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as TldTldRouteImport } from './routes/tld.$tld'
 
 const DomainsRoute = DomainsRouteImport.update({
   id: '/domains',
@@ -22,31 +23,40 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TldTldRoute = TldTldRouteImport.update({
+  id: '/tld/$tld',
+  path: '/tld/$tld',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/domains': typeof DomainsRoute
+  '/tld/$tld': typeof TldTldRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/domains': typeof DomainsRoute
+  '/tld/$tld': typeof TldTldRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/domains': typeof DomainsRoute
+  '/tld/$tld': typeof TldTldRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/domains'
+  fullPaths: '/' | '/domains' | '/tld/$tld'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/domains'
-  id: '__root__' | '/' | '/domains'
+  to: '/' | '/domains' | '/tld/$tld'
+  id: '__root__' | '/' | '/domains' | '/tld/$tld'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   DomainsRoute: typeof DomainsRoute
+  TldTldRoute: typeof TldTldRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -65,12 +75,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/tld/$tld': {
+      id: '/tld/$tld'
+      path: '/tld/$tld'
+      fullPath: '/tld/$tld'
+      preLoaderRoute: typeof TldTldRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   DomainsRoute: DomainsRoute,
+  TldTldRoute: TldTldRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
