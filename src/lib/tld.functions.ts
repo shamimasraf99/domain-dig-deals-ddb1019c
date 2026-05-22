@@ -122,6 +122,35 @@ export const getTldOffers = createServerFn({ method: "GET" })
       }
     }
 
+    // Resolve domainoffer.net redirect links to the actual registrar URLs
+    await Promise.all(
+      all.map(async (r) => {
+        if (!r.offer_url) return;
+        const url = r.offer_url.startsWith("http")
+          ? r.offer_url
+          : `https://domainoffer.net${r.offer_url}`;
+        try {
+          const controller = new AbortController();
+          const t = setTimeout(() => controller.abort(), 6000);
+          const res = await fetch(url, {
+            method: "GET",
+            redirect: "follow",
+            signal: controller.signal,
+            headers: {
+              "User-Agent":
+                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36",
+            },
+          });
+          clearTimeout(t);
+          if (res.url && !/domainoffer\.net/i.test(res.url)) {
+            r.offer_url = res.url;
+          }
+        } catch (e) {
+          // Keep original on failure; UI will still link via domainoffer.net
+        }
+      })
+    );
+
     all.sort((a, b) => {
       const ap = a.registration_price ?? Infinity;
       const bp = b.registration_price ?? Infinity;
