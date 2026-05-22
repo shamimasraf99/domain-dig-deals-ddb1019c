@@ -94,7 +94,17 @@ export function ComparisonTable({ offers, loading, initialSearch = "" }: Props) 
                     </td>
                     <td className="px-5 py-4 text-right">
                       <Button asChild size="sm" className="gradient-primary border-0">
-                        <a href={o.buy_link} target="_blank" rel="noopener noreferrer">
+                        <a
+                          href={
+                            o.buy_link && o.buy_link !== "#"
+                              ? o.buy_link.startsWith("http")
+                                ? o.buy_link
+                                : `https://domainoffer.net${o.buy_link.startsWith("/") ? "" : "/"}${o.buy_link}`
+                              : "#"
+                          }
+                          target="_blank"
+                          rel="noopener noreferrer sponsored"
+                        >
                           Buy
                           <ExternalLink className="ml-1 h-3.5 w-3.5" />
                         </a>
