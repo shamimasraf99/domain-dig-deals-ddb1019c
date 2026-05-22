@@ -42,6 +42,8 @@ const POPULAR_TLD_LIST = [".com", ".net", ".org", ".io", ".dev", ".ai", ".xyz", 
 
 function Home() {
   const { t } = useI18n();
+  const { format } = useCurrency();
+
   const [search, setSearch] = useState("");
   const domainsQ = useQuery({ queryKey: ["domains"], queryFn: fetchDomains });
 
