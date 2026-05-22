@@ -23,9 +23,9 @@ const SYMBOLS: Record<Currency, string> = {
 interface Ctx {
   currency: Currency;
   setCurrency: (c: Currency) => void;
-  format: (priceBdt: number) => string;
+  format: (priceUsd: number) => string;
   symbol: string;
-  convert: (priceBdt: number) => number;
+  convert: (priceUsd: number) => number;
 }
 
 const CurrencyContext = createContext<Ctx | null>(null);
@@ -44,16 +44,17 @@ export function CurrencyProvider({ children }: { children: ReactNode }) {
     if (typeof window !== "undefined") localStorage.setItem("currency", c);
   };
 
-  const convert = (priceBdt: number) => priceBdt * RATES[currency];
+  const convert = (priceUsd: number) => priceUsd * RATES[currency];
 
-  const format = (priceBdt: number) => {
-    const v = convert(priceBdt);
+  const format = (priceUsd: number) => {
+    const v = convert(priceUsd);
     const decimals = currency === "BDT" || currency === "INR" ? 0 : 2;
     return `${SYMBOLS[currency]}${v.toLocaleString("en-US", {
       minimumFractionDigits: decimals,
       maximumFractionDigits: decimals,
     })}`;
   };
+
 
   return (
     <CurrencyContext.Provider
