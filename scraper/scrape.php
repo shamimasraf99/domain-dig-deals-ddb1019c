@@ -284,59 +284,34 @@ if ($quick) {
         ];
     }
 } else {
-    echo "==> Full mode: fetching every registrar per TLD\n";
+    echo "==> Full mode: fetching every registrar per TLD (walking pages)\n";
     $tlds = array_values(array_filter(array_map(fn($r) => $r['tld'], $compareRows)));
+    $MAX_PAGES_PER_TLD = 30;
 
-    foreach (array_chunk($tlds, 50) as $batchIdx => $batch) {
-        // First page of each TLD in parallel
-        $urls = [];
-        foreach ($batch as $tld) {
-            $slug = ltrim($tld, '.');
-            $urls[$tld] = BASE_URL . '/tld/' . rawurlencode($slug) . '?per_page=' . TLD_PER_PAGE . '&page=1';
-        }
-        $pages = http_get_many($urls);
-        $needMore = []; // tld => totalPages
+    foreach (array_chunk($tlds, 25) as $batchIdx => $batch) {
+        $remaining = [];
+        foreach ($batch as $tld) $remaining[$tld] = 1; // next page to fetch
 
-        foreach ($pages as $tld => $html) {
-            if ($html === null) { echo "    !! $tld page 1 failed\n"; continue; }
-            $rows = parse_tld_page($html);
-            foreach ($rows as $row) {
-                $idx++;
-                $reg = $row['registrar'];
-                $offers[] = [
-                    'id'                 => 'd' . $idx,
-                    'domain'             => $tld,
-                    'registrar'          => $reg,
-                    'registrar_logo'     => strtoupper(substr(preg_replace('/[^A-Za-z]/', '', $reg), 0, 2)),
-                    'price'              => $row['registration_price'] ?? 0,
-                    'registration_price' => $row['registration_price'],
-                    'renewal_price'      => $row['renewal_price'],
-                    'transfer_price'     => $row['transfer_price'],
-                    'icann_fee'          => $row['icann_fee'],
-                    'coupon_code'        => '',
-                    'category'           => 'domain-offer',
-                    'buy_link'           => $row['offer_url'] ?: '#',
-                    'rating'             => null,
-                ];
+        $seenPerTld = []; // tld => set of "registrar|price"
+        while ($remaining) {
+            $urls = [];
+            foreach ($remaining as $tld => $page) {
+                $slug = ltrim($tld, '.');
+                $urls["$tld|$page"] = BASE_URL . '/tld/' . rawurlencode($slug) . '?page=' . $page;
             }
-            $tp = parse_total_pages($html);
-            if ($tp > 1) $needMore[$tld] = $tp;
-        }
-
-        // Remaining pages per TLD (also parallel)
-        $extra = [];
-        foreach ($needMore as $tld => $tp) {
-            $slug = ltrim($tld, '.');
-            for ($p = 2; $p <= $tp; $p++) {
-                $extra["$tld|$p"] = BASE_URL . '/tld/' . rawurlencode($slug) . '?per_page=' . TLD_PER_PAGE . '&page=' . $p;
-            }
-        }
-        if ($extra) {
-            $extraPages = http_get_many($extra);
-            foreach ($extraPages as $key => $html) {
+            $pages = http_get_many($urls);
+            $next = [];
+            foreach ($pages as $key => $html) {
+                [$tld, $pageStr] = explode('|', $key, 2);
+                $page = (int)$pageStr;
                 if ($html === null) continue;
-                [$tld] = explode('|', $key, 2);
-                foreach (parse_tld_page($html) as $row) {
+                $rows = parse_tld_page($html);
+                $freshCount = 0;
+                foreach ($rows as $row) {
+                    $k = $row['registrar'] . '|' . ($row['registration_price'] ?? '');
+                    if (isset($seenPerTld[$tld][$k])) continue;
+                    $seenPerTld[$tld][$k] = true;
+                    $freshCount++;
                     $idx++;
                     $reg = $row['registrar'];
                     $offers[] = [
@@ -349,16 +324,21 @@ if ($quick) {
                         'renewal_price'      => $row['renewal_price'],
                         'transfer_price'     => $row['transfer_price'],
                         'icann_fee'          => $row['icann_fee'],
-                        'coupon_code'        => '',
+                        'coupon_code'        => $row['coupon_code'] ?? '',
                         'category'           => 'domain-offer',
                         'buy_link'           => $row['offer_url'] ?: '#',
                         'rating'             => null,
                     ];
                 }
+                // Stop walking this TLD when a page returns no new rows or hits max.
+                if ($freshCount > 0 && $page < $MAX_PAGES_PER_TLD) {
+                    $next[$tld] = $page + 1;
+                }
             }
+            $remaining = $next;
         }
 
-        echo "    batch " . ($batchIdx + 1) . "/" . ceil(count($tlds) / 50)
+        echo "    batch " . ($batchIdx + 1) . "/" . ceil(count($tlds) / 25)
             . " — running total offers: " . count($offers) . "\n";
     }
 
