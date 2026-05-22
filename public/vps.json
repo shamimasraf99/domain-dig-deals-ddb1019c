@@ -1,8 +1,0 @@
-[
-  { "id": "v1", "name": "Hostinger KVM 2", "provider": "Hostinger", "price": 599, "period": "month", "cpu": "2 vCPU", "ram": "8 GB", "storage": "100 GB NVMe", "bandwidth": "8 TB", "rating": 4.7, "buy_link": "#", "badge": "Popular" },
-  { "id": "v2", "name": "Vultr High Frequency", "provider": "Vultr", "price": 600, "period": "month", "cpu": "1 vCPU", "ram": "1 GB", "storage": "32 GB NVMe", "bandwidth": "1 TB", "rating": 4.6, "buy_link": "#" },
-  { "id": "v3", "name": "DigitalOcean Premium", "provider": "DigitalOcean", "price": 700, "period": "month", "cpu": "1 vCPU", "ram": "1 GB", "storage": "35 GB SSD", "bandwidth": "1 TB", "rating": 4.8, "buy_link": "#", "badge": "Best UI" },
-  { "id": "v4", "name": "Linode Nanode", "provider": "Linode", "price": 500, "period": "month", "cpu": "1 vCPU", "ram": "1 GB", "storage": "25 GB SSD", "bandwidth": "1 TB", "rating": 4.5, "buy_link": "#" },
-  { "id": "v5", "name": "Contabo VPS L", "provider": "Contabo", "price": 1450, "period": "month", "cpu": "8 vCPU", "ram": "30 GB", "storage": "800 GB SSD", "bandwidth": "32 TB", "rating": 4.4, "buy_link": "#", "badge": "Best Specs" },
-  { "id": "v6", "name": "AWS Lightsail", "provider": "AWS", "price": 350, "period": "month", "cpu": "1 vCPU", "ram": "512 MB", "storage": "20 GB SSD", "bandwidth": "1 TB", "rating": 4.3, "buy_link": "#" }
-]

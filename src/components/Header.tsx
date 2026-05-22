@@ -14,23 +14,12 @@ import { Button } from "@/components/ui/button";
 
 export function Header() {
   const { theme, toggle } = useTheme();
-  const { t, lang, setLang } = useI18n();
+  const { lang, setLang } = useI18n();
   const { currency, setCurrency } = useCurrency();
   const [open, setOpen] = useState(false);
   const pathname = useRouterState({ select: (s) => s.location.pathname });
 
-  const links = [
-    { to: "/domains", label: t("nav_domains") },
-    { to: "/hosting", label: t("nav_hosting") },
-    { to: "/vps", label: t("nav_vps") },
-    { to: "/free-domains", label: t("nav_free") },
-    { to: "/coupons", label: t("nav_coupons") },
-    { to: "/cheapest-domains", label: t("nav_cheapest") },
-    { to: "/best-hosting", label: t("nav_best_hosting") },
-    { to: "/registrars", label: t("nav_registrars") },
-    { to: "/blog", label: t("nav_blog") },
-    { to: "/contact", label: t("nav_contact") },
-  ];
+  const links = [{ to: "/domains", label: "Domain Offers" }];
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/50 glass">
@@ -45,8 +34,8 @@ export function Header() {
             </span>
           </Link>
 
-          <nav className="hidden xl:flex items-center gap-1 text-sm">
-            {links.slice(0, 7).map((l) => {
+          <nav className="hidden md:flex items-center gap-1 text-sm">
+            {links.map((l) => {
               const active = pathname === l.to;
               return (
                 <Link
@@ -60,18 +49,6 @@ export function Header() {
                 </Link>
               );
             })}
-            <DropdownMenu>
-              <DropdownMenuTrigger className="px-3 py-2 rounded-lg font-medium text-foreground/80 hover:text-primary hover:bg-primary/5">
-                More
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                {links.slice(7).map((l) => (
-                  <DropdownMenuItem key={l.to} asChild>
-                    <Link to={l.to}>{l.label}</Link>
-                  </DropdownMenuItem>
-                ))}
-              </DropdownMenuContent>
-            </DropdownMenu>
           </nav>
 
           <div className="flex items-center gap-1.5">
@@ -116,7 +93,7 @@ export function Header() {
             <Button
               variant="ghost"
               size="icon"
-              className="xl:hidden"
+              className="md:hidden"
               onClick={() => setOpen((v) => !v)}
               aria-label="Menu"
             >
@@ -126,7 +103,7 @@ export function Header() {
         </div>
 
         {open && (
-          <nav className="xl:hidden pb-4 grid grid-cols-2 gap-1">
+          <nav className="md:hidden pb-4 grid gap-1">
             {links.map((l) => (
               <Link
                 key={l.to}

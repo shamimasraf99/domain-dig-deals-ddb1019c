@@ -6,11 +6,9 @@ import {
   Search,
   Shield,
   Sparkles,
-  TrendingUp,
   Zap,
   Globe2,
   CheckCircle2,
-  Mail,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -21,22 +19,17 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { useI18n } from "@/contexts/I18nContext";
-import { fetchDomains, fetchHosting, fetchVps, fetchCoupons } from "@/services/api";
-import { ComparisonTable } from "@/components/ComparisonTable";
+import { fetchDomains } from "@/services/api";
 import { DomainTldTable } from "@/components/DomainTldTable";
-import { HostingCard } from "@/components/HostingCard";
-import { VpsCard } from "@/components/VpsCard";
-import { CouponCard } from "@/components/CouponCard";
-import { toast } from "sonner";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "DomainDeals — Compare Domain, Hosting & VPS Offers" },
+      { title: "DomainDeals — Compare Domain Offers from Top Registrars" },
       {
         name: "description",
         content:
-          "Compare prices from 100+ domain registrars and hosting providers. Verified coupons, real-time prices, and the best deals on the web.",
+          "Compare domain prices from 100+ registrars. Verified, real-time prices and the best domain deals on the web.",
       },
     ],
     links: [{ rel: "canonical", href: "/" }],
@@ -59,9 +52,6 @@ function Home() {
   const { t } = useI18n();
   const [search, setSearch] = useState("");
   const domainsQ = useQuery({ queryKey: ["domains"], queryFn: fetchDomains });
-  const hostingQ = useQuery({ queryKey: ["hosting"], queryFn: fetchHosting });
-  const vpsQ = useQuery({ queryKey: ["vps"], queryFn: fetchVps });
-  const couponsQ = useQuery({ queryKey: ["coupons"], queryFn: fetchCoupons });
 
   return (
     <div className="overflow-x-hidden">
@@ -74,13 +64,11 @@ function Home() {
               <span>{t("hero_badge")}</span>
             </div>
             <h1 className="font-display text-4xl md:text-6xl lg:text-7xl font-bold leading-[1.05] mb-6">
-              {t("hero_title_1")}{" "}
-              <span className="text-gradient">{t("hero_title_2")}</span>
-              <br />
-              {t("hero_title_3")}
+              Compare domain prices{" "}
+              <span className="text-gradient">in one place</span>
             </h1>
             <p className="text-base md:text-lg text-muted-foreground max-w-2xl mx-auto mb-8">
-              {t("hero_subtitle")}
+              Find the cheapest registrar for every TLD — register, transfer, and renew with confidence.
             </p>
 
             <div className="glass rounded-2xl p-2 max-w-2xl mx-auto flex gap-2 shadow-elegant">
@@ -89,13 +77,13 @@ function Home() {
                 <Input
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  placeholder={t("search_placeholder")}
+                  placeholder="Search a TLD or registrar..."
                   className="pl-11 h-12 bg-transparent border-0 focus-visible:ring-0 text-base"
                 />
               </div>
               <Button asChild size="lg" className="gradient-primary border-0 h-12 px-6 shadow-glow">
                 <Link to="/domains">
-                  {t("search_btn")}
+                  Search
                   <ArrowRight className="ml-1.5 h-4 w-4" />
                 </Link>
               </Button>
@@ -119,7 +107,7 @@ function Home() {
       </section>
 
       {/* POPULAR EXTENSIONS */}
-      <Section title={t("popular_extensions")} subtitle="Find your perfect TLD">
+      <Section title="Popular extensions" subtitle="Find your perfect TLD">
         <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3">
           {POPULAR_TLDS.map((p) => (
             <Link
@@ -147,76 +135,18 @@ function Home() {
         <DomainTldTable offers={domainsQ.data || []} loading={domainsQ.isLoading} />
       </Section>
 
-      {/* FEATURED HOSTING */}
-      <Section
-        title={t("featured_hosting")}
-        subtitle="Hand-picked hosting plans with massive savings"
-        action={{ label: t("view_all"), to: "/hosting" }}
-      >
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
-          {(hostingQ.data || []).slice(0, 3).map((h) => (
-            <HostingCard key={h.id} o={h} />
-          ))}
-        </div>
-      </Section>
-
-      {/* COUPONS */}
-      <Section
-        title={t("latest_coupons")}
-        subtitle="Verified discount codes you can use today"
-        action={{ label: t("view_all"), to: "/coupons" }}
-      >
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {(couponsQ.data || []).slice(0, 4).map((c) => (
-            <CouponCard key={c.id} c={c} />
-          ))}
-        </div>
-      </Section>
-
-      {/* TRENDING / VPS */}
-      <Section
-        title={t("top_vps")}
-        subtitle="Powerful cloud servers at unbeatable prices"
-        action={{ label: t("view_all"), to: "/vps" }}
-      >
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
-          {(vpsQ.data || []).slice(0, 3).map((v) => (
-            <VpsCard key={v.id} o={v} />
-          ))}
-        </div>
-      </Section>
-
-      {/* TRUST STATS */}
-      <section className="container mx-auto px-4 py-16">
-        <div className="glass rounded-3xl p-10 grid grid-cols-2 md:grid-cols-4 gap-6 text-center shadow-soft">
-          {[
-            { v: "100+", l: "Registrars" },
-            { v: "2.4M", l: "Prices Tracked" },
-            { v: "$18M", l: "Saved by Users" },
-            { v: "4.9/5", l: "User Rating" },
-          ].map((s) => (
-            <div key={s.l}>
-              <div className="font-display text-3xl md:text-4xl font-bold text-gradient">
-                {s.v}
-              </div>
-              <div className="text-sm text-muted-foreground mt-1">{s.l}</div>
-            </div>
-          ))}
-        </div>
-      </section>
-
       {/* FAQ */}
-      <Section title={t("faq")} subtitle="Everything you need to know">
+      <Section title="Frequently asked questions" subtitle="Everything you need to know">
         <div className="max-w-3xl mx-auto">
           <Accordion type="single" collapsible className="glass rounded-2xl px-6">
             {[
               {
                 q: "How do you keep prices accurate?",
-                a: "We track prices from 100+ registrars and hosting providers in real time. Coupons are verified weekly by our editorial team.",
+                a: "We track prices from 100+ registrars in real time and refresh data hourly.",
               },
               {
                 q: "Are the prices in my local currency?",
-                a: "Yes — switch currencies in the header. We support BDT, INR, USD, GBP, and EUR with live conversion across the entire site.",
+                a: "Yes — switch currencies in the header. We support BDT, INR, USD, GBP, and EUR with live conversion.",
               },
               {
                 q: "Do you charge anything?",
@@ -225,10 +155,6 @@ function Home() {
               {
                 q: "Why is there a price difference between renewal and registration?",
                 a: "Many registrars offer big introductory discounts. We always show transfer and renewal prices so you can plan long-term costs.",
-              },
-              {
-                q: "Can I get a free domain?",
-                a: "Yes — many hosting providers include a free domain for the first year. Check our Free Domain Offers page.",
               },
             ].map((f, i) => (
               <AccordionItem key={i} value={`q${i}`} className="border-border/50">
@@ -243,37 +169,6 @@ function Home() {
           </Accordion>
         </div>
       </Section>
-
-      {/* NEWSLETTER */}
-      <section className="container mx-auto px-4 py-16">
-        <div className="relative overflow-hidden rounded-3xl gradient-hero p-10 md:p-14 text-center text-primary-foreground shadow-elegant">
-          <div className="absolute inset-0 gradient-mesh opacity-30" />
-          <div className="relative max-w-2xl mx-auto">
-            <Mail className="h-10 w-10 mx-auto mb-4 opacity-90" />
-            <h2 className="font-display text-3xl md:text-4xl font-bold mb-3">
-              {t("newsletter_title")}
-            </h2>
-            <p className="opacity-90 mb-6">{t("newsletter_sub")}</p>
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                toast.success("Subscribed! Welcome aboard.");
-              }}
-              className="flex flex-col sm:flex-row gap-2 max-w-md mx-auto"
-            >
-              <Input
-                type="email"
-                required
-                placeholder={t("your_email")}
-                className="bg-background/95 text-foreground border-0 h-12"
-              />
-              <Button type="submit" size="lg" variant="secondary" className="h-12">
-                {t("subscribe")}
-              </Button>
-            </form>
-          </div>
-        </div>
-      </section>
     </div>
   );
 }
