@@ -32,11 +32,24 @@ export function AdBanner() {
   }, []);
 
   return (
-    <div className="w-full flex justify-center py-4">
-      <div
-        ref={containerRef}
-        style={{ width: 728, height: 90, maxWidth: "100%" }}
-      />
+    <div className="w-full flex justify-center py-4 px-2 overflow-hidden">
+      <div className="ad-banner-scale">
+        <div
+          ref={containerRef}
+          style={{ width: 728, height: 90 }}
+        />
+      </div>
+      <style>{`
+        .ad-banner-scale { width: 728px; height: 90px; }
+        @media (max-width: 768px) {
+          .ad-banner-scale {
+            transform: scale(calc((100vw - 16px) / 728));
+            transform-origin: top center;
+            height: calc(90px * ((100vw - 16px) / 728));
+          }
+          .ad-banner-scale > div { transform-origin: top center; }
+        }
+      `}</style>
     </div>
   );
 }
