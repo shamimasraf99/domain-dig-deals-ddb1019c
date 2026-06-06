@@ -152,14 +152,39 @@ function parse_tld_page(string $html): array {
 
     // Build registrar => coupon map from top-deal promotional blocks
     $coupons = [];
-    foreach ($xp->query('//div[contains(@class,"top-deal-info") or contains(@class,"top-deal")]') as $blk) {
-        $regNode  = $xp->query('.//*[contains(@class,"top-deal-registrar")]', $blk)->item(0);
-        $codeNode = $xp->query('.//*[contains(@class,"couponCode")]', $blk)->item(0);
-        if ($regNode && $codeNode) {
-            $k = strtolower(preg_replace('/[^a-z0-9]/i', '', text($regNode)));
-            if ($k !== '') $coupons[$k] = text($codeNode);
+
+foreach ($xp->query('//div[contains(@class,"top-deal-info") or contains(@class,"top-deal")]') as $blk) {
+
+    $regNode = $xp->query('.//*[contains(@class,"top-deal-registrar")]', $blk)->item(0);
+
+    if (!$regNode) {
+        continue;
+    }
+
+    $k = strtolower(
+        preg_replace('/[^a-z0-9]/i', '', text($regNode))
+    );
+
+    if ($k === '') {
+        continue;
+    }
+
+    if (!isset($coupons[$k])) {
+        $coupons[$k] = [];
+    }
+
+    foreach ($xp->query('.//*[contains(@class,"couponCode")]', $blk) as $couponNode) {
+
+        $coupon = trim(text($couponNode));
+
+        if (
+            $coupon !== '' &&
+            !in_array($coupon, $coupons[$k], true)
+        ) {
+            $coupons[$k][] = $coupon;
         }
     }
+}
 
     $out  = [];
     foreach ($xp->query('//tbody[@id="domain-table-body"]/tr') as $tr) {
@@ -181,7 +206,7 @@ function parse_tld_page(string $html): array {
             'renewal_price'      => $renew ? parse_price(text($renew)) : null,
             'transfer_price'     => $transfer ? parse_price(text($transfer)) : null,
             'offer_url'          => $offerLink ? $offerLink->getAttribute('href') : null,
-            'coupon_code'        => $coupons[$k] ?? '',
+            'coupon_code'        => $coupons[$k] ?? []'',
         ];
     }
     return $out;
@@ -298,7 +323,7 @@ if ($quick) {
                         'renewal_price'      => $row['renewal_price'],
                         'transfer_price'     => $row['transfer_price'],
                         'icann_fee'          => $row['icann_fee'],
-                        'coupon_code'        => $row['coupon_code'] ?? '',
+                        'coupon_code'        => $row['coupon_codes'] ?? [],
                         'category'           => 'domain-offer',
                         'buy_link'           => $row['offer_url'] ?: '#',
                         'rating'             => null,
