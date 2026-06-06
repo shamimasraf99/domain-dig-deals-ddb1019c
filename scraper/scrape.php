@@ -206,7 +206,7 @@ foreach ($xp->query('//div[contains(@class,"top-deal-info") or contains(@class,"
             'renewal_price'      => $renew ? parse_price(text($renew)) : null,
             'transfer_price'     => $transfer ? parse_price(text($transfer)) : null,
             'offer_url'          => $offerLink ? $offerLink->getAttribute('href') : null,
-            'coupon_code'        => $coupons[$k] ?? []'',
+            'coupon_code'        => $coupons[$k] ?? [],
         ];
     }
     return $out;
