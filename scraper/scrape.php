@@ -275,7 +275,7 @@ if ($quick) {
             'renewal_price'      => null,
             'transfer_price'     => null,
             'icann_fee'          => $r['icann_fee'],
-            'coupon_codes'        => '',
+            'coupon_codes'       => [],
             'category'           => 'domain-offer',
             'buy_link'           => $r['offer_url'] ?: '#',
             'cheapest'           => true,
