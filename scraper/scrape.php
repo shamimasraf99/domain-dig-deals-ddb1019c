@@ -206,7 +206,7 @@ foreach ($xp->query('//div[contains(@class,"top-deal-info") or contains(@class,"
             'renewal_price'      => $renew ? parse_price(text($renew)) : null,
             'transfer_price'     => $transfer ? parse_price(text($transfer)) : null,
             'offer_url'          => $offerLink ? $offerLink->getAttribute('href') : null,
-            'coupon_code'        => $coupons[$k] ?? [],
+            'coupon_codes'       => $coupons[$k] ?? [],
         ];
     }
     return $out;
@@ -323,7 +323,7 @@ if ($quick) {
                         'renewal_price'      => $row['renewal_price'],
                         'transfer_price'     => $row['transfer_price'],
                         'icann_fee'          => $row['icann_fee'],
-                        'coupon_code'        => $row['coupon_codes'] ?? [],
+                        'coupon_codes'        => $row['coupon_codes'] ?? [],
                         'category'           => 'domain-offer',
                         'buy_link'           => $row['offer_url'] ?: '#',
                         'rating'             => null,
