@@ -26,6 +26,7 @@ $quick = in_array('--quick', $argv, true);
 
 function http_get(string $url): ?string {
     $ch = curl_init($url);
+
     curl_setopt_array($ch, [
         CURLOPT_RETURNTRANSFER => true,
         CURLOPT_FOLLOWLOCATION => true,
@@ -36,10 +37,24 @@ function http_get(string $url): ?string {
             'Accept-Language: en-US,en;q=0.9',
         ],
     ]);
+
     $body = curl_exec($ch);
     $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+    // DEBUG
+    echo "URL: {$url}\n";
+    echo "HTTP CODE: {$code}\n";
+
+    if ($body === false) {
+        echo "CURL ERROR: " . curl_error($ch) . "\n";
+    }
+
     curl_close($ch);
-    if ($body === false || $code >= 400) return null;
+
+    if ($body === false || $code >= 400) {
+        return null;
+    }
+
     return is_string($body) ? $body : null;
 }
 
